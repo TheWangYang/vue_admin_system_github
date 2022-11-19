@@ -1,20 +1,27 @@
-## 端云一体的缺陷检测系统
-本项目为缺陷检测系统的客户端部分，主要包括：数据查看、数据修改、图片检测、人工复检、在线标注等功能。
-### v1.0版本
-* 实现功能： 
-1. 集成element-plus组件，实现初级的管理系统布局；
-2. 实现初步数据查看功能（2022.9.07）；
-3. 实现初步数据修改功能（2022.9.08）；
-4. 实现初步图片检测功能（2022.9.18）；
-5. 实现初步人工复检功能（2022.9.19）；
-6. 实现初步在线标注功能（2022.9.26）；
+## End cloud integrated defect detection system
+This project is the client part of the defect detection system, which mainly includes: data viewing, data modification, picture detection, manual recheck, online annotation and other functions.
+### Project version update timeline
+#### version: v1.0
+* Implementation functions
+1. Integrated element-plus components to achieve primary management system layout;
+2. Implementation of preliminary data viewing function (2022.9.07);
+3. Implement the preliminary data modification function (2022.9.08);
+4. Realize the preliminary image detection function (2022.9.18);
+5. Realize the preliminary manual recheck function (2022.9.19);
+6. Realize the preliminary online annotation function (2022.9.26);
 
 
-### v2.0版本
-* 实现功能
-1. 完善v1.0版本的功能和UI渲染界面（2022.9.30）：
-2. 修改js接口，将静态数据改为从服务器动态获得（2022.10.6）；
-3. 完善部分功能的处理逻辑，使得系统性能更加稳定和快速（2022.10.7）；
+#### version: v2.0
+* Implementation functions
+1. Improved v1.0 features and UI rendering interface (2022.9.30) :
+2. Modify the js interface to dynamically obtain static data from the server (2022.10.6);
+3. Improve the processing logic of some functions to make the system performance more stable and fast (2022.10.7);
 4. todo...
 
+### Project Contributors
+1. [TheWangYang](https://github.com/TheWangYang)
+
+
+### Others
+1. todo...
 
