@@ -152,7 +152,6 @@ export default {
 
     //设置鼠标抬起逻辑函数
     function onMouseUp(){
-      //console.log("onMouseUp...")
       //判断是否正在绘制
       if (drawing.value) {
         //表示当前box绘制完毕
@@ -194,7 +193,6 @@ export default {
     function onMouseMove(event){
       //得到ref元素的value值
       const elem = annotationSurfaceRoot.value;
-      // console.log("elem : ",elem.offsetLeft, "---", elem.offsetTop)
 
       //得到实际的偏移量
       const offset = {
@@ -203,23 +201,16 @@ export default {
         top: elem.offsetTop + store.state.pictureDetectionAbout.boxOffset.y + store.state.pictureDetectionAbout.layoutElHeaderHeight
       };
 
-      //console.log("x + : ", elem.offsetLeft + store.state.pictureDetectionAbout.boxOffset.x)
-      // console.log("offset : ",offset.left, offset.top)
-
       const cursor = {
         x: event.clientX,
         y: event.clientY
       };
-
-      //console.log(event.clientX, event.clientY)
 
       //得到在PictureDetection组件的右上角zoomPanel中的局部显示图片
       const relativeCursor = {
         x: (cursor.x - offset.left) * store.state.pictureDetectionAbout.image.ratio.width,
         y: (cursor.y - offset.top) * store.state.pictureDetectionAbout.image.ratio.height
       };
-
-      // console.log("relativeCursor before commit : ", relativeCursor.x, relativeCursor.y)
 
       cursorInformation.value.cursor = cursor;
       cursorInformation.value.offset = offset;

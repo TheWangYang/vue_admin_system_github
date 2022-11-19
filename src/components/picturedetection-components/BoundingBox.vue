@@ -55,7 +55,7 @@
                 {{ getAnnotationLabel }}
               </div>
 
-                <el-dialog v-model="selected" title="请选择缺陷类型" close-icon="false" width="30%">
+                <el-dialog v-model="selected" title="请选择缺陷类型" close-icon="false" width="30%" :close-on-click-modal="true">
                   <div class="mb-2 flex items-center text-sm">
                     <el-radio-group v-model="annotationLabel" @change="onSelectLabel" class="ml-4">
                       <el-radio
@@ -126,8 +126,6 @@ export default {
 
     //监听选择缺陷类别函数
     function onSelectLabel() {
-      //console.log("annotationLabel :", annotationLabel)
-      //console.log("annotationLabel value : ",annotationLabel.value)
       //动态提交到后台mutation中，传入参数为boxUid和注释标签变量值
       store.commit("pictureDetectionAbout/updateBoxAnnotationLabel", {
         boxUid: props.id,

@@ -20,6 +20,7 @@ const developmentAnnotationLabels = [
 const pictureDetectionOptions = {
     namespaced: true,
     state: {
+        detectionPictureSavePath:"",//待检测图片保存在服务器端的路径变量
         detectionPictureUri: "",//设置待检测图片的uri
         globalDisabled: false,//默认设置为可见
         axiosRequestConfig: {},
@@ -80,13 +81,13 @@ const pictureDetectionOptions = {
         },
 
         //设置重置图片检测页面的一些状态，当重新进入该组件页面时调用
-        resetPictureDetectionStatus(context, value) {
+        resetPictureDetectionStatus(context) {
             //提交到mutation函数中，重置图片属性和标注数组
             context.commit("resetPictureDetectionStatusMutation")
         },
 
         //设置提交图片复检框的action接口
-        async submitToManualRecheckAction(context, value) {
+        async submitToManualRecheckAction() {
             return new Promise((resolve, reject) => {
                 setTimeout(function () {
                     //发送图片复检框给服务器
@@ -99,127 +100,47 @@ const pictureDetectionOptions = {
         },
 
         //设置检测图片的action接口
-        async detectionPicture(context, value) {
-            //console.log("是否检测？: ", value)
+        async detectionPicture(context) {
             //设置定时器表示请求服务器获得检测结果的过程
             return new Promise((resolve, reject) => {
-                setTimeout(function () {
-                    //发送图片的属性给服务器
-                    //context.state.contextSelections
-                    //模拟得到服务器返回的图片url，重新设置给image.url
-                    // const detectedUrl = "/images/system_class_to_bbox_bg.jpg"
-                    //向服务器发送是否包含缺陷value，如果包含，那么保存并检测；如果不包含那么仅保存不检测
-                    //模拟服务器得到的新的图片注释数组
-                    const newImageAnnotations = [
-                        {
-                            uid: 1,
-                            box: {
-                                //box的坐标
-                                x: 340,
-                                y: 450,
-                                //box的大小
-                                width: 150,
-                                height: 180,
-                            },
-                            annotationLabel: {
-                                id: 1,
-                                name: "scratch",
-                            },
-                        },
-                        {
-                            uid: 2,
-                            box: {
-                                //box的坐标
-                                x: 560,
-                                y: 670,
-                                //box的大小
-                                width: 230,
-                                height: 230,
-                            },
-                            annotationLabel: {
-                                id: 2,
-                                name: "spot",
-                            },
-                        },
-                        {
-                            uid: 3,
-                            box: {
-                                //box的坐标
-                                x: 450,
-                                y: 350,
-                                //box的大小
-                                width: 360,
-                                height: 280,
-                            },
-                            annotationLabel: {
-                                id: 1,
-                                name: "scratch",
-                            },
-                        },
-                        {
-                            uid: 4,
-                            box: {
-                                //box的坐标
-                                x: 200,
-                                y: 750,
-                                //box的大小
-                                width: 230,
-                                height: 120,
-                            },
-                            annotationLabel: {
-                                id: 3,
-                                name: "rust",
-                            },
-                        },
-                        {
-                            uid: 5,
-                            box: {
-                                //box的坐标
-                                x: 340,
-                                y: 870,
-                                //box的大小
-                                width: 250,
-                                height: 190,
-
-                            },
-                            annotationLabel: {
-                                id: 1,
-                                name: "scratch",
-                            },
-                        },
-                        {
-                            uid: 6,
-                            box: {
-                                //box的坐标
-                                x: 560,
-                                y: 660,
-                                //box的大小
-                                width: 210,
-                                height: 205,
-
-                            },
-                            annotationLabel: {
-                                id: 2,
-                                name: "spot",
-                            },
-                        },
-                    ]
-                    //包装上述两个对象为一个新的value对象，传递给mutations方法中
-                    const value = {
-                        // detectedUrl,
-                        newImageAnnotations
+                //访问服务器接口获得图片的检测信息
+                //使用axios访问图片数据接口
+                axios({
+                    //走代理服务器访问数据
+                    url: 'http://localhost:8080/proxy_1/detection_picture',
+                    method: 'post',
+                    data: JSON.stringify({
+                        //将图片的保存路径传送到服务器端
+                        detectionPictureSavePath: context.state.detectionPictureSavePath
+                    }),
+                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                }).then(function (response) {
+                    //得到服务器返回结果
+                    console.log("detection picture : ", response.data.annotations_list)
+                    if (JSON.stringify(response.data.annotations_list) === '[]') {
+                        reject("远程检测图片失败！")
+                    } else {
+                        //模拟服务器得到的新的图片注释数组
+                        const annotations_list = response.data.annotations_list
+                        //包装上述两个对象为一个新的value对象，传递给mutations方法中
+                        const value = {
+                            annotations_list
+                        }
+                        //得到检测结果，更新检测页面显示组件
+                        context.commit("detectionPictureMutation", value)
+                        resolve("远程检测图片成功！")
                     }
-                    //得到检测结果，更新检测页面显示组件
-                    context.commit("detectionPictureMutation", value)
-                    resolve("success!")
-                }, 3000)
+                }).catch(function (error) {
+                    //请求服务器失败
+                    reject(error)
+                });
             })
         },
 
         //异步得到图片检测页面的初始化状态
         async fetchState(context, imageLoader) {
             //正在加载远程浏览器图片（用于部署应用模式）
-            console.log("正在加载远程浏览器图片（用于部署应用模式）...")
+            //console.log("正在加载远程浏览器图片（用于部署应用模式）...")
             //得到用户名和密码
             const currUserInfo = JSON.parse(localStorage.userInfo)
             return new Promise((resolve, reject) => {
@@ -237,13 +158,13 @@ const pictureDetectionOptions = {
                         headers: {'Content-Type': 'application/json;charset=UTF-8'}
                     }).then(function (response) {
                         //得到服务器返回结果
-                        console.log("add picture : ", response.data)
                         if (response.data.new_image_uri === "") {
                             reject("远程新增图片失败！")
                         } else if (response.data.new_image_uri === "error") {
-                            console.log("远程新增图片错误，请稍后重试...")
                             reject("远程新增图片错误，请稍后重试...")
                         } else {
+                            //更新检测图片的相对路径
+                            context.state.detectionPictureSavePath = response.data.save_path
                             //首先更新图片显示的uri
                             context.state.detectionPictureUri = response.data.new_image_uri
                             //将图片检测uri设置给图片的url
@@ -361,6 +282,8 @@ const pictureDetectionOptions = {
             state.globalDisabled = false;
             //重置image对象的loaded属性为false
             state.image.loaded = false;//设置图片加载未完毕
+            //重置图片uri为""
+            state.detectionPictureUri = ""
             //重置图片属性
             state.image.url = "";
             state.image = {
@@ -391,10 +314,8 @@ const pictureDetectionOptions = {
         detectionPictureMutation(state, value) {
             //设置全局控制页面组件显示变量flag
             state.globalDisabled = true
-            // //重新获得图片url
-            // state.image.url = value.detectedUrl
             //重新设置新的注释数组对象
-            state.annotations = value.newImageAnnotations
+            state.annotations = value.annotations_list
         },
 
         //设置上下文选择对象变量

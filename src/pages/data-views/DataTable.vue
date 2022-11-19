@@ -104,6 +104,11 @@
       </template>
     </el-table-column>
 
+    <el-table-column align="center" prop="shooting_environment" label="拍摄环境"/>
+    <el-table-column align="center" prop="shooting_direction" label="拍摄角度"/>
+    <el-table-column align="center" prop="shooting_quality" label="拍摄质量"/>
+    <el-table-column align="center" prop="is_detection" label="是否包含缺陷"/>
+
     <el-table-column label="操作" align="center" width="160">
       <template #default="scope">
         <el-button link type="danger" size="small" @click.prevent="deletePicture(scope.$index, scope.row)">删除
@@ -266,6 +271,8 @@ export default {
       const toBeDetectedPicture = store.state.pictureAbout.pictureList[index]
       //向pictureDetectionAbout的store中设置初始化图片url
       store.state.pictureDetectionAbout.detectionPictureUri = server_prefix.value + toBeDetectedPicture.save_path
+      //将该图片路径直接赋值给store中的路径变量
+      store.state.pictureDetectionAbout.detectionPictureSavePath = toBeDetectedPicture.save_path
       //设置路由跳转到检测图片页面
       router.push({path: "/picture-detection"})
     }
