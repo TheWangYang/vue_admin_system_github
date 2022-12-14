@@ -6,7 +6,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/proxy_1': {
-        target: 'http://localhost:8001',
+        target: 'http://127.0.0.1:8001',
         pathRewrite: {//重写请求路径，将前缀/demo替换为空字符串
           '^/proxy_1':''
         },

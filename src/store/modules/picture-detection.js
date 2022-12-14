@@ -2,6 +2,7 @@
 import axios from 'axios'
 //使用router对象
 import {useRouter} from "vue-router";
+import {ref} from "vue";
 
 //得到用户的身份
 const savedAuth = localStorage.getItem("auth");
@@ -10,17 +11,13 @@ const savedAuth = localStorage.getItem("auth");
 const router = useRouter()
 
 //定义标注图片需要的标签
-const developmentAnnotationLabels = [
-    {id: 1, name: "scratch"},
-    {id: 2, name: "spot"},
-    {id: 3, name: "rust"},
-    {id: 4, name: "other"}
-]
+const developmentAnnotationLabels = [{id: 1, name: "scratch"}, {id: 2, name: "spot"}, {id: 3, name: "rust"}, {
+    id: 4, name: "other"
+}]
 
 const pictureDetectionOptions = {
-    namespaced: true,
-    state: {
-        detectionPictureSavePath:"",//待检测图片保存在服务器端的路径变量
+    namespaced: true, state: {
+        detectionPictureSavePath: "",//待检测图片保存在服务器端的路径变量
         detectionPictureUri: "",//设置待检测图片的uri
         globalDisabled: false,//默认设置为可见
         axiosRequestConfig: {},
@@ -28,10 +25,7 @@ const pictureDetectionOptions = {
         useAxios: true,//默认值设置为可使用，使用模拟服务器获得
         //设置是否包含垃圾
         contextSelections: {
-            environment: null,
-            viewPoint: null,
-            quality: null,
-            isHasDetection: null//默认包含缺陷点
+            environment: null, viewPoint: null, quality: null, isHasDetection: null//默认包含缺陷点
         },
         actualImageWidth: 0,
         actualImageHeight: 0,
@@ -100,31 +94,39 @@ const pictureDetectionOptions = {
         },
 
         //设置检测图片的action接口
-        async detectionPicture(context) {
+        async detectionPicture(context, curr_picture_properties) {
+            console.log("curr_picture_properties: ", curr_picture_properties)
+            //得到当前登录的用户信息
+            const currUserInfo = JSON.parse(localStorage.userInfo)
             //设置定时器表示请求服务器获得检测结果的过程
             return new Promise((resolve, reject) => {
                 //访问服务器接口获得图片的检测信息
                 //使用axios访问图片数据接口
                 axios({
                     //走代理服务器访问数据
-                    url: 'http://localhost:8080/proxy_1/detection_picture',
-                    method: 'post',
-                    data: JSON.stringify({
+                    url: 'http://localhost:8080/proxy_1/detection_picture', method: 'post', data: JSON.stringify({
+                        //传入检索及修改图片需要的信息
                         //将图片的保存路径传送到服务器端
-                        detectionPictureSavePath: context.state.detectionPictureSavePath
-                    }),
-                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                        detectionPictureSavePath: context.state.detectionPictureSavePath,
+                        shooting_environment: curr_picture_properties.shooting_environment,
+                        shooting_direction: curr_picture_properties.shooting_direction,
+                        shooting_quality: curr_picture_properties.shooting_quality, //传入用户信息
+                        loginName: currUserInfo.loginName,
+                        loginPassword: currUserInfo.loginPassword
+                    }), headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(function (response) {
                     //得到服务器返回结果
-                    console.log("detection picture : ", response.data.annotations_list)
+                    console.log("detection picture : ", response.data)
                     if (JSON.stringify(response.data.annotations_list) === '[]') {
                         reject("远程检测图片失败！")
                     } else {
-                        //模拟服务器得到的新的图片注释数组
+                        //获得服务器检测得到的图片注释数组
                         const annotations_list = response.data.annotations_list
+                        //获得服务器端保存检测结果图片相对路径
+                        const detection_relative_result_path = response.data.detection_relative_result_path
                         //包装上述两个对象为一个新的value对象，传递给mutations方法中
                         const value = {
-                            annotations_list
+                            annotations_list, detection_relative_result_path
                         }
                         //得到检测结果，更新检测页面显示组件
                         context.commit("detectionPictureMutation", value)
@@ -140,22 +142,16 @@ const pictureDetectionOptions = {
         //异步得到图片检测页面的初始化状态
         async fetchState(context, imageLoader) {
             //正在加载远程浏览器图片（用于部署应用模式）
-            //console.log("正在加载远程浏览器图片（用于部署应用模式）...")
             //得到用户名和密码
             const currUserInfo = JSON.parse(localStorage.userInfo)
             return new Promise((resolve, reject) => {
-
                 if (context.state.detectionPictureUri === "") {//表示图片检测Uri为空，直接从服务器加载一张新的图片
                     //使用axios访问图片数据接口
                     axios({
                         //走代理服务器访问数据
-                        url: 'http://localhost:8080/proxy_1/add_picture',
-                        method: 'post',
-                        data: JSON.stringify({
-                            loginName: currUserInfo.loginName,
-                            loginPassword: currUserInfo.loginPassword
-                        }),
-                        headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                        url: 'http://localhost:8080/proxy_1/add_picture', method: 'post', data: JSON.stringify({
+                            loginName: currUserInfo.loginName, loginPassword: currUserInfo.loginPassword
+                        }), headers: {'Content-Type': 'application/json;charset=UTF-8'}
                     }).then(function (response) {
                         //得到服务器返回结果
                         if (response.data.new_image_uri === "") {
@@ -200,7 +196,7 @@ const pictureDetectionOptions = {
                 } else {
                     //将图片检测uri设置给图片的url
                     context.state.image.url = context.state.detectionPictureUri
-                    //访问服务器成功，在此注册imageLoader
+                    //注册imageLoader
                     imageLoader.value.onload = () => {
                         //这里测试图片加载完毕的情景
                         context.state.image.loaded = true;//设置图片加载完毕
@@ -264,8 +260,7 @@ const pictureDetectionOptions = {
             // We use Date.now() as a unique id
             const uid = Date.now();//设置每个box的关联uid
             const annotationLabel = {
-                id: 0,
-                name: "待定",
+                id: 0, name: "待定",
             }
             //console.log("before addBox : ",state.annotations)
             //向annotations数组中增加新的注释对象
@@ -282,8 +277,6 @@ const pictureDetectionOptions = {
             state.globalDisabled = false;
             //重置image对象的loaded属性为false
             state.image.loaded = false;//设置图片加载未完毕
-            //重置图片uri为""
-            state.detectionPictureUri = ""
             //重置图片属性
             state.image.url = "";
             state.image = {
@@ -301,10 +294,7 @@ const pictureDetectionOptions = {
             state.actualImageWidth = 0
             state.actualImageHeigh = 0
             state.contextSelections = {
-                environment: null,
-                viewPoint: null,
-                quality: null,
-                isHasDetection: null//默认不设置是否包含缺陷点
+                environment: null, viewPoint: null, quality: null, isHasDetection: null//默认不设置是否包含缺陷点
             }
             //state.boxOffset = {x:NaN, y:NaN}
             state.relativeCursor = {x: 0, y: 0}
@@ -314,8 +304,19 @@ const pictureDetectionOptions = {
         detectionPictureMutation(state, value) {
             //设置全局控制页面组件显示变量flag
             state.globalDisabled = true
-            //重新设置新的注释数组对象
+            //设置得到的注释数组对象
             state.annotations = value.annotations_list
+            //设置当前图片显示的uri为结果图片
+            //向pictureDetectionAbout的store中设置初始化图片url
+            const server_prefix = "http://localhost:8001"
+            state.detectionPictureUri = server_prefix + value.detection_relative_result_path
+            //将图片检测Uri设置给图片的url
+            state.image.url = state.detectionPictureUri
+            if (state.image.url) {
+                state.image.loader.src = state.image.url;
+            }
+            //将该图片路径直接赋值给store中的路径变量
+            state.detectionPictureSavePath = value.detection_relative_result_path
         },
 
         //设置上下文选择对象变量
@@ -342,11 +343,7 @@ const pictureDetectionOptions = {
 
         //更新相对坐标函数
         updateRelativeCursor(state, offset) {
-            if (
-                offset.x > 0 &&
-                offset.y > 0 &&
-                offset.x <= state.image.size.width &&
-                offset.y <= state.image.size.height) {
+            if (offset.x > 0 && offset.y > 0 && offset.x <= state.image.size.width && offset.y <= state.image.size.height) {
                 // console.log("offset.x : ",offset.x, "offset.y : ", offset.y)
                 state.relativeCursor.x = Math.round(offset.x);
                 state.relativeCursor.y = Math.round(offset.y);

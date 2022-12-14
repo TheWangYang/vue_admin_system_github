@@ -23,10 +23,10 @@
         :key="annotatedDetection.uid"
     />
 
-    <CrosshairGuide :cursor-information="cursorInformation" />
+    <CrosshairGuide :cursor-information="cursorInformation"/>
 
     <!--设置新绘制的BoundingBox-->
-    <BoundingBox ref="draw" id="draw" :drawed="drawedBox" v-if="drawing" />
+    <BoundingBox ref="draw" id="draw" :drawed="drawedBox" v-if="drawing"/>
 
   </div>
 </template>
@@ -42,13 +42,13 @@ import {useStore} from 'vuex'
 import {ref, onMounted} from 'vue';
 
 export default {
-  name:"AnnotationSurface",
-  components:{
+  name: "AnnotationSurface",
+  components: {
     CrosshairGuide,
     GridLoader,
     BoundingBox
   },
-  setup(){
+  setup() {
     //得到数据仓库store
     const store = useStore()
     //定义获得当前组件的根ref元素
@@ -57,22 +57,49 @@ export default {
     //定义是否正在绘制
     const drawing = ref(false)
     //设置的绘制开始的起点坐标
-    const drawedMouseDownLocation = ref({ x: NaN, y: NaN })
+    const drawedMouseDownLocation = ref({x: NaN, y: NaN})
     //设置已经绘制好的新增box变量
-    const drawedBox = ref({ x: NaN, y: NaN, width: NaN, height: NaN })
+    const drawedBox = ref({x: NaN, y: NaN, width: NaN, height: NaN})
 
     //定义相关变量
     /** 当前相对于表面的相对位置 */
-    const relativeCursor = ref({ x: 0, y: 0 })
+    const relativeCursor = ref({x: 0, y: 0})
     //有关要传递给 CrosshairGuide 的光标的信息
     const cursorInformation = ref({
-      cursor: { x: 0, y: 0 },
+      cursor: {x: 0, y: 0},
       elem: annotationSurfaceRoot.value,
-      offset: { left: 0, top: 0 }
+      offset: {left: 0, top: 0}
+    })
+
+    //设置组件挂载时的处理操作
+    onMounted(() => {
+      //向window对象中增加监听器
+      window.addEventListener("detectionResize", () => {
+        const annotatorSurface = document.getElementById("annotation-surface-image");
+        const annotatorWidth = annotatorSurface.offsetWidth;
+        const annotatorHeight = annotatorSurface.offsetHeight;
+        console.log("annotatorWidth: ", annotatorWidth)
+        console.log("annotatorHeight : ", annotatorHeight)
+        const {actualImageWidth, actualImageHeight} = estimateActualImageSize(annotatorWidth, annotatorHeight);
+        //提交到后边的更新图片分辨率函数
+        store.commit("pictureDetectionAbout/updateRatio", {
+          actualImageWidth,
+          actualImageHeight
+        });
+
+        //定义box边界偏移量
+        const boxOffset = {
+          x: annotatorWidth / 2 - actualImageWidth / 2,
+          y: annotatorHeight / 2 - actualImageHeight / 2
+        };
+        console.log("boxOffset : ", boxOffset)
+        //提交到更新边界偏移量函数中
+        store.commit("pictureDetectionAbout/updateBoxOffset", boxOffset);
+      });
     })
 
     //确定实际的图片大小
-    function estimateActualImageSize(annotatorWidth,annotatorHeight) {
+    function estimateActualImageSize(annotatorWidth, annotatorHeight) {
       //得到分辨率长宽比率
       const annotatorLandscapeRatio = annotatorWidth / annotatorHeight;
       //console.log("store.state.pictureDetectionAbout.image.landscapeRatio : ",store.state.pictureDetectionAbout.image.landscapeRatio)
@@ -92,35 +119,8 @@ export default {
       }
     }
 
-    //设置组件挂载时的处理操作
-    onMounted(() => {
-      //console.log("annotations : ", store.state.pictureDetectionAbout.annotations)
-      //向window对象中增加监听器
-      window.addEventListener("detectionResize", () => {
-        const annotatorSurface = document.getElementById("annotation-surface-image");
-        const annotatorWidth = annotatorSurface.offsetWidth;
-        const annotatorHeight = annotatorSurface.offsetHeight;
-        //console.log("annotatorHeight : ",annotatorHeight)
-        const { actualImageWidth, actualImageHeight } = estimateActualImageSize(annotatorWidth, annotatorHeight);
-        //提交到后边的更新图片分辨率函数
-        store.commit("pictureDetectionAbout/updateRatio", {
-          actualImageWidth,
-          actualImageHeight
-        });
-
-        //定义box边界偏移量
-        const boxOffset = {
-          x: annotatorWidth / 2 - actualImageWidth / 2,
-          y: annotatorHeight / 2 - actualImageHeight / 2
-        };
-        console.log("boxOffset : ",boxOffset)
-        //提交到更新边界偏移量函数中
-        store.commit("pictureDetectionAbout/updateBoxOffset", boxOffset);
-      });
-    })
-
     //设置鼠标按下逻辑函数
-    function onMouseDown(event){
+    function onMouseDown(event) {
       //console.log("onMouseDown...")
       if (
           store.state.pictureDetectionAbout.globalDisabled
@@ -151,13 +151,13 @@ export default {
 
 
     //设置鼠标抬起逻辑函数
-    function onMouseUp(){
+    function onMouseUp() {
       //判断是否正在绘制
       if (drawing.value) {
         //表示当前box绘制完毕
         drawing.value = false;
         //得到新绘制的box框
-        const box ={
+        const box = {
           //box的坐标
           x: drawedBox.value.x,
           y: drawedBox.value.y,
@@ -190,7 +190,7 @@ export default {
     }
 
     //设置的鼠标移动逻辑处理函数
-    function onMouseMove(event){
+    function onMouseMove(event) {
       //得到ref元素的value值
       const elem = annotationSurfaceRoot.value;
 
@@ -222,9 +222,9 @@ export default {
         drawedBox.value.width = Math.abs(store.state.pictureDetectionAbout.relativeCursor.x - drawedMouseDownLocation.value.x);
         drawedBox.value.height = Math.abs(store.state.pictureDetectionAbout.relativeCursor.y - drawedMouseDownLocation.value.y);
         drawedBox.value.x = store.state.pictureDetectionAbout.relativeCursor.x - drawedMouseDownLocation.value.x < 0
-                ? store.state.pictureDetectionAbout.relativeCursor.x : drawedMouseDownLocation.value.x;
+            ? store.state.pictureDetectionAbout.relativeCursor.x : drawedMouseDownLocation.value.x;
         drawedBox.value.y = store.state.pictureDetectionAbout.relativeCursor.y - drawedMouseDownLocation.value.y < 0
-                ? store.state.pictureDetectionAbout.relativeCursor.y : drawedMouseDownLocation.value.y;
+            ? store.state.pictureDetectionAbout.relativeCursor.y : drawedMouseDownLocation.value.y;
       }
 
     }

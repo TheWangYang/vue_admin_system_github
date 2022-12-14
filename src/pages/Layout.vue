@@ -37,8 +37,8 @@
         </el-menu>
       </el-header>
 
-      <!--管理界面container-->
-      <el-container>
+      <!--显示界面container-->
+      <el-container style="height: 100%;">
         <!--引入侧边栏-->
         <el-aside ref="layoutElAsideRoot">
           <el-row class="tac">
@@ -129,8 +129,8 @@
           </el-row>
         </el-aside>
 
-        <el-scrollbar height="100%" style="width: 100%">
-          <el-main>
+        <el-scrollbar height="100%" style="width: 100%;">
+          <el-main style="width: 100%;">
             <!--放置router-view-->
             <router-view></router-view>
           </el-main>
@@ -205,7 +205,6 @@ export default {
 </script>
 
 <style scoped>
-
 /*设置用户登录在导航栏靠右*/
 .flex-grow {
   flex-grow: 1;

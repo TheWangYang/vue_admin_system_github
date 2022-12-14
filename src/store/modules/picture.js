@@ -51,7 +51,7 @@ const picutureOptions = {
             })
         },
         //设置的增加图片的函数
-        async addPictureAction(context) {
+        async addPictureAction() {
             console.log("addPictureAction被调用了...")
             //得到当前登录用户对象
             const currUserInfo = JSON.parse(localStorage.userInfo)
@@ -170,6 +170,7 @@ const picutureOptions = {
 
     //实际操作对象，直接操作数据
     mutations: {
+        //将新增加的图片数据放入到store.pictureList数组中
         getPictureDataMutation(state, value) {
             console.log("mutation中的getPictureDataMutation被调用了...")
             state.pictureList = value

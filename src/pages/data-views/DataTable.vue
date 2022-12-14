@@ -38,7 +38,7 @@
   </div>
   <el-table :data="displayTableData" v-loading="isTableLoading"
             element-loading-text="tableLoadingText"
-            style="width: 100%;" max-height="600" :stripe="true" :fit="true" :border="true">
+            style="width: 100%;" max-height="700" :stripe="true" :fit="true" :border="true">
     <el-table-column align="center" prop="picture_id" label="图片Id" fixed/>
     <el-table-column align="center" prop="picture_name" label="图片名称"/>
     <el-table-column align="center" sortable prop="created_time" label="获得时间"/>
@@ -114,7 +114,8 @@
         <el-button link type="danger" size="small" @click.prevent="deletePicture(scope.$index, scope.row)">删除
         </el-button>
         <el-button text @click="editPicture(scope.$index, scope.row)" type="primary" size="small">编辑</el-button>
-        <el-button text @click="detectionPicture(scope.$index, scope.row)" type="primary" size="small">检测该图片</el-button>
+        <el-button text @click="detectionPicture(scope.$index, scope.row)" type="primary" size="small">检测该图片
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -341,23 +342,23 @@ export default {
         //重新请求获得图片列表
         store.dispatch("pictureAbout/getPictureDataAction")
             .then(res => {
-          console.log(res)
-          //设置表格loading为false
-          isTableLoading.value = false
-          //设置表格dialog对话框显示
-          isTableDialog.value = true
-          //设置显示文字，新增图片数据成功
-          tableDialogMessage.value = "重新加载图片列表成功，success message : " + res
-        })
+              console.log(res)
+              //设置表格loading为false
+              isTableLoading.value = false
+              //设置表格dialog对话框显示
+              isTableDialog.value = true
+              //设置显示文字，新增图片数据成功
+              tableDialogMessage.value = "重新加载图片列表成功，success message : " + res
+            })
             .catch(err => {
-          //设置表格loading为false
-          isTableLoading.value = false
-          //设置表格dialog对话框显示
-          isTableDialog.value = true
-          //设置显示文字，新增图片数据失败
-          tableDialogMessage.value = "重新加载图片列表失败，error message : " + err
-          console.log(err)
-        })
+              //设置表格loading为false
+              isTableLoading.value = false
+              //设置表格dialog对话框显示
+              isTableDialog.value = true
+              //设置显示文字，新增图片数据失败
+              tableDialogMessage.value = "重新加载图片列表失败，error message : " + err
+              console.log(err)
+            })
       }).catch(error => {
         console.log(error)
         isTableLoading.value = false

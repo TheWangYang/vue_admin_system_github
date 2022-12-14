@@ -5,7 +5,6 @@
     <el-breadcrumb-item>检测操作</el-breadcrumb-item>
     <el-breadcrumb-item>图片检测</el-breadcrumb-item>
   </el-breadcrumb>
-  <h1>图片检测</h1>
 
   <div id="annotator" element-loading-text="annotatorLoadingText" v-loading.fullscreen.lock="fullscreenLoading">
     <!--设置点击重置按钮提示对话框-->
@@ -111,7 +110,6 @@ import ContextSelectionPanel from "@/components/picturedetection-components/Cont
 //引入vue中的函数等
 import {ref, onMounted} from 'vue'
 import {useStore} from 'vuex'
-import {useRouter} from 'vue-router'
 
 export default {
   name: "PictureDetection",
@@ -122,8 +120,6 @@ export default {
   },
   //设置setup函数
   setup() {
-    //获得路由对象
-    const router = useRouter()
     //设置标注页面加载时的提示文字
     const annotatorLoadingText = ref("")
     //控制检测对话框变为加载状态
@@ -162,11 +158,8 @@ export default {
 
     //组件挂载时，向后传递imageLoader组件对象，并访问服务器拍摄一张图片
     onMounted(() => {
-      // console.log('mounted被调用了...');
       //重置部分状态，当页面再次渲染时调用该action函数
       store.dispatch("pictureDetectionAbout/resetPictureDetectionStatus")
-      //设置图片未加载完毕
-      store.state.pictureDetectionAbout.image.loaded = false;//设置图片加载未完毕
       store.dispatch("pictureDetectionAbout/fetchState", imageLoader).then((res) => {
         isUniversalDialog.value = true
         universalDialogMessage.value = "初始化完成，message : " + res
@@ -212,11 +205,17 @@ export default {
           && contextSelectionPanel.value.qualitySelection != null) {
         //表示有垃圾，则可以提交检测
         if (contextSelectionPanel.value.isHasDetection === true) {
+          //创建向服务器端传输的图片属性数据
+          const curr_picture_properties = {
+            shooting_environment: contextSelectionPanel.value.environmentSelection,
+            shooting_direction: contextSelectionPanel.value.viewPointSelection,
+            shooting_quality: contextSelectionPanel.value.qualitySelection
+          }
           //设置对话框变为加载状态
           fullscreenLoading.value = true
           annotatorLoadingText.value = "正在检测，请稍后..."
           //提交到后台进行检测和保存
-          store.dispatch("pictureDetectionAbout/detectionPicture").then(res => {
+          store.dispatch("pictureDetectionAbout/detectionPicture", curr_picture_properties).then(res => {
             //设置对话框消失
             isDetectionDialog.value = false
             //设置加载状态消失
@@ -357,6 +356,7 @@ export default {
 }
 
 #annotator {
+  padding-top: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
