@@ -2,7 +2,7 @@
     <!--设置警告提示框-->
     <!-- <el-alert v-show="isShowAlert" title="warning alert" type="warning" description="对不起，您无权限访问，请先登录！" show-icon /> -->
     <h1>欢迎来到端云一体的缺陷检测系统</h1>
-  <el-carousel :interval="4000" type="card" height="200px">
+  <el-carousel :interval="3000" type="card" height="800px">
     <el-carousel-item v-for="item in 6" :key="item">
       <h3 text="2xl" justify="center">{{ item }}</h3>
     </el-carousel-item>

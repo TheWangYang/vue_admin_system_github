@@ -1,5 +1,5 @@
 //引入vue-router插件
-import { createRouter, createWebHashHistory } from 'vue-router'   // 使用插件可以不加这个
+import {createRouter, createWebHashHistory} from 'vue-router'   // 使用插件可以不加这个
 
 //引入layout主布局组件
 import Layout from '../pages/Layout.vue'
@@ -32,31 +32,31 @@ const routes = [
         children: [
             //配置系统欢迎页
             {
-                path:"system-welcome",
-                name:"SystemWelcome",
-                component:SystemWelcome,
-                meta:{
-                    title:"缺陷检测系统欢迎您"
+                path: "system-welcome",
+                name: "SystemWelcome",
+                component: SystemWelcome,
+                meta: {
+                    title: "缺陷检测系统欢迎您"
                 }
             },
             //配置数据列表
             {
                 path: "data-table",
                 name: "DataTable",
-                component:DataTable,
-                meta:{
-                    isAuth:true,
-                    title:"数据列表"
+                component: DataTable,
+                meta: {
+                    isAuth: true,
+                    title: "数据列表"
                 }
             },
             //配置数据树
             {
                 path: "data-tree",
                 name: "DataTree",
-                component:DataTree,
-                meta:{
-                    isAuth:true,
-                    title:"数据树"
+                component: DataTree,
+                meta: {
+                    isAuth: true,
+                    title: "数据树"
                 }
             },
             //配置数据检查
@@ -64,38 +64,38 @@ const routes = [
                 path: "data-check",
                 name: "DataCheck",
                 component: DataCheck,
-                meta:{
-                    isAuth:true,
-                    title:"数据检查"
+                meta: {
+                    isAuth: true,
+                    title: "数据检查"
                 }
             },
             //配置图片检测
             {
-                path:"picture-detection",
-                name:"PictureDetection",
-                component:PictureDetection,
-                meta:{
-                    isAuth:true,
-                    title:"图片检测"
+                path: "picture-detection",
+                name: "PictureDetection",
+                component: PictureDetection,
+                meta: {
+                    isAuth: true,
+                    title: "图片检测"
                 }
             },
             //配置用户中心
             {
-                path:"user-center",
-                name:"UserCenter",
-                component:UserCenter,
-                meta:{
-                    isAuth:true,
-                    title:"用户中心"
+                path: "user-center",
+                name: "UserCenter",
+                component: UserCenter,
+                meta: {
+                    isAuth: true,
+                    title: "用户中心"
                 }
             },
             {
-                path:"user-manage",
-                name:"UserManage",
+                path: "user-manage",
+                name: "UserManage",
                 component: UserManage,
-                meta:{
-                 isAuth:true,
-                 title:"用户管理"
+                meta: {
+                    isAuth: true,
+                    title: "用户管理"
                 },
                 //设置独享路由守卫，由一个组件独享
                 // beforeEnter: (to, from, next) => {
@@ -114,36 +114,46 @@ const routes = [
 
             //使用系统快速开始
             {
-                path:"system-quick-start",
-                name:"SystemQuickStart",
-                component:SystemQuickStart,
-                meta:{
-                    isAuth:false,
-                    title:"快速开始"
+                path: "system-quick-start",
+                name: "SystemQuickStart",
+                component: SystemQuickStart,
+                meta: {
+                    isAuth: false,
+                    title: "快速开始"
                 }
             },
             //配置系统关于
             {
-                path:"system-about",
-                name:"SystemAbout",
-                component:SystemAboutUs,
-                meta:{
-                    isAuth:false,
-                    title:"系统关于"
+                path: "system-about",
+                name: "SystemAbout",
+                component: SystemAboutUs,
+                meta: {
+                    isAuth: false,
+                    title: "系统关于"
                 }
             }
 
         ]
     },
 
-    //设置的用户登录布局
+    //设置的用户登录跳转路由
     {
         path: "/user-login",
         name: "UserLogin",
-        component:UserLogin,
-        meta:{
+        component: UserLogin,
+        meta: {
             //设置isUserExist属性来判断用户是否已经登录
-            isUserExist:true
+            isUserExist: true
+        }
+    },
+    //设置的用户退出登录跳转路由
+    {
+        path: "/user-loginout-login",
+        name: "User-Loginout-Login",
+        component: UserLogin,
+        meta: {
+            //设置deleteUser属性使用户退出登录
+            isDeleteUser: true,
         }
     },
 ]
@@ -157,35 +167,36 @@ const router = createRouter({
 })
 
 
-//在暴露出去之前添加一个路由守卫，全局前置路由守卫
+//设置全局前置路由守卫
 router.beforeEach((to, from, next) => {
-    // console.log("前置路由守卫被调用...", to, from)
-    //实现网页title随着组件切换改变，需要在上述的每个路由中添加路由元数据meta中进行添加
-    // if (to.meta.isAuth) {//判断是否需要权限校验
-    //     alert("对不起，您当前无权限...请先登录！")
-    // } else {
-    //     next()
-    // }
 
-    if(to.meta.isUserExist){//如果需要验证，那么查看localStorage中是否已经包含用户登录信息
-        // const userInfo = JSON.parse(localStorage.userInfo)
-        //console.log("测试log")
-        if(typeof localStorage.userInfo == "undefined"){//判断userInfo是否为undefined
+    if (to.meta.isUserExist) {//如果需要验证，那么查看localStorage中是否已经包含用户登录信息
+        if (typeof localStorage.userInfo == "undefined") {//判断userInfo是否为undefined
             //如果是，直接放行
             next()
-        }else{
+        } else {
             //如果不是，先提示用户已经登录，然后放行
             alert("您当前已经登录...")
         }
-    }else{
+    } else if (to.meta.isDeleteUser) {//设置退出登录之前，清楚用户信息
+        if (typeof localStorage.userInfo == "undefined") {//判断userInfo是否为undefined
+            //如果是，直接放行
+            next()
+        } else {
+            //清除用户信息，然后提示用户退出登录成功
+            localStorage.userInfo = undefined
+            //如果不是，先提示用户已经登录，然后放行
+            alert("退出登录成功...")
+            next()
+        }
+    } else {
         next()
     }
-
 
 })
 
 
-// 后置路由守卫设置，其中只有to，from两个参数
+// 设置的全局后置路由守卫设置
 router.afterEach((to, from) => {
     // console.log('后置路由守卫...', to, from)
     document.title = to.meta.title || '端云一体的缺陷检测系统'//切换组件之后，对组件展示的title进行修改

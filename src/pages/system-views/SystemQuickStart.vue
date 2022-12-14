@@ -7,7 +7,7 @@
   </el-breadcrumb>
   <h1>快速开始</h1>
 
-  <el-carousel height="1000px" :autoplay="false" arrow="always">
+  <el-carousel height="800px" :autoplay="false" arrow="always" :interval="3000">
     <el-carousel-item v-for="(item, index) in systemIntroductionList" :key="index" :label="item.title" >
       <div class="common-layout">
         <el-container class="container_absolute">

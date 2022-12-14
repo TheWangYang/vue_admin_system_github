@@ -32,7 +32,11 @@
           </el-sub-menu>
           <div class="flex-grow"/>
           <!--设置登录-->
-          <el-menu-item index="/user-login">用户登录</el-menu-item>
+          <el-sub-menu index="5">
+            <template #title>用户状态</template>
+            <el-menu-item index="/user-login">登录</el-menu-item>
+            <el-menu-item index="/user-loginout-login">退出</el-menu-item>
+          </el-sub-menu>
 
         </el-menu>
       </el-header>
