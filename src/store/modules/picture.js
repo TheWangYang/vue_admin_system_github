@@ -92,7 +92,7 @@ const picutureOptions = {
             //得到当前用户信息
             const currUserInfo = JSON.parse(localStorage.userInfo)
             //根据index得到将删除的图片id
-            const delete_picture = context.state.pictureList[option.index]
+            const delete_picture = option.row
             const pictureId = delete_picture.picture_id
             const save_path = delete_picture.save_path
             const result_path = delete_picture.result_path
@@ -117,11 +117,17 @@ const picutureOptions = {
                     //得到服务器返回结果
                     console.log("delete picture : ", response.data.result)
                     if (response.data.result === "failed") {
-                        reject("远程删除图片失败！")
-                    } else if (response.data.result === "userId is None") {
-                        reject("无法得到当前用户id")
-                    } else {
-                        resolve("远程删除图片成功！")
+                        reject("远程删除图片失败...")
+                    } else if (response.data.result === "Remove UnSynchronized Error") {
+                        reject("服务器删除图片同步错误...")
+                    } else if (response.data.result === "Original File Not Exists"){
+                        reject("待删除图片在远程服务器中不存在...")
+                    }else if (response.data.result === "Remove File Inner Error"){
+                        reject("服务器删除图片内部错误...")
+                    }else if(response.data.result === "error"){
+                        reject("服务器错误...")
+                    }else if(response.data.result === "success"){
+                        resolve("远程服务器删除图片成功...")
                     }
                 }).catch(function (error) {
                     //请求服务器失败

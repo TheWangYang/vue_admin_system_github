@@ -158,7 +158,7 @@ export default {
 
     //组件挂载时，向后传递imageLoader组件对象，并访问服务器拍摄一张图片
     onMounted(() => {
-      //重置部分状态，当页面再次渲染时调用该action函数
+      // 重置部分状态，当页面再次渲染时调用该action函数
       store.dispatch("pictureDetectionAbout/resetPictureDetectionStatus")
       store.dispatch("pictureDetectionAbout/fetchState", imageLoader).then((res) => {
         isUniversalDialog.value = true

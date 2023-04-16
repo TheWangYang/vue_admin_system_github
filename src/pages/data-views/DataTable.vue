@@ -162,12 +162,13 @@ export default {
     //得到路由跳转对象
     const router = useRouter()
     //定义访问的服务器请求接口前缀
-    const server_prefix = ref("http://localhost:8001")
+    const server_prefix = ref("http://127.0.0.1:8081")
     //定义表格中删除图片选项的处理对话框配置
     const isDeletePictureDialog = ref(false)
     //定义表格处理完成逻辑之后的dialog对话框显示配置
     const isTableDialog = ref(false)
     const tableDialogMessage = ref("")
+
     //定义的表格loading需要的变量
     const tableLoadingText = ref("")
     const isTableLoading = ref(false)
@@ -328,7 +329,7 @@ export default {
       isDeletePictureDialog.value = true
     }
 
-    //--------------------------设置对话框处理逻辑函数-------------------------
+    //-------------------------------------------------设置删除图片对话框处理逻辑函数----------------------------------------------------
     function confirmDeletePictureDialog() {
       //设置删除图片对话框隐藏
       isDeletePictureDialog.value = false
@@ -369,6 +370,7 @@ export default {
       })
     }
 
+    //----------------------------------------------设置编辑图片对话框处理逻辑函数-----------------------------------------
     //设置的编辑图片函数
     function editPicture(index, row) {
       console.log("editPicture,index :", index, "row : ", row)

@@ -195,6 +195,7 @@ const pictureDetectionOptions = {
                             context.state.globalDisplayFlag = true
 
                             if (context.state.image.url) {
+                                console.log("context.state.image.url: ", context.state.image.url)
                                 context.state.image.loader.src = context.state.image.url;
                             }
 
@@ -320,7 +321,7 @@ const pictureDetectionOptions = {
             state.annotations = value.annotations_list
             //设置当前图片显示的uri为结果图片
             //向pictureDetectionAbout的store中设置初始化图片url
-            const server_prefix = "http://localhost:8001"
+            const server_prefix = "http://127.0.0.1:8081"
             state.detectionPictureUri = server_prefix + value.detection_relative_result_path
             //将图片检测Uri设置给图片的url
             state.image.url = state.detectionPictureUri

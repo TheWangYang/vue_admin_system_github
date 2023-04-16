@@ -143,7 +143,7 @@ const userManageOptions = {
                 }).then(function (response) {
                     // 得到服务器返回结果
                     if (response.data.flag === "failed") {
-                        reject("远程删除用户失败！")
+                        reject("远程修改用户失败！")
                     } else if (response.data.flag === "error") {
                         console.log("远程修改用户错误，请稍后重试...")
                         reject("远程修改用户错误，请稍后重试...")
