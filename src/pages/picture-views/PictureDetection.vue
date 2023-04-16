@@ -359,9 +359,9 @@ export default {
   padding-top: 10px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
-  height: 100%;
+  height: 80vh;
 }
 
 #annotator-surface-container {

@@ -21,7 +21,7 @@ const routes = [
     //设置layout主布局
     {
         path: '/',
-        redirect: '/system-welcome',
+        redirect: '/picture-detection',  //设置默认路由位置到图片检测页面
         name: "layout",
         component: Layout,
         meta: {
@@ -146,6 +146,7 @@ const routes = [
             isUserExist: true
         }
     },
+
     //设置的用户退出登录跳转路由
     {
         path: "/user-loginout-login",

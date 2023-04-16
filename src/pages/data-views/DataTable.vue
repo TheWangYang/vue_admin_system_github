@@ -12,14 +12,14 @@
 
   <div>
     <!--设置提示信息对话框-->
-    <el-dialog v-model="isTableDialog" title="提示" width="30%" :show-close="false">
-      <h3>{{ tableDialogMessage }}</h3>
-      <template #footer>
-                <span class="dialog-footer">
-                    <el-button type="primary" @click="isTableDialog = false">确认</el-button>
-                </span>
-      </template>
-    </el-dialog>
+<!--    <el-dialog v-model="isTableDialog" title="提示" width="30%" :show-close="false">-->
+<!--      <h3>{{ tableDialogMessage }}</h3>-->
+<!--      <template #footer>-->
+<!--                <span class="dialog-footer">-->
+<!--                    <el-button type="primary" @click="isTableDialog = false">确认</el-button>-->
+<!--                </span>-->
+<!--      </template>-->
+<!--    </el-dialog>-->
 
     <!--设置删除对话框-->
     <el-dialog v-model="isDeletePictureDialog" title="删除图片提示" width="30%">
@@ -38,7 +38,7 @@
   </div>
   <el-table :data="displayTableData" v-loading="isTableLoading"
             element-loading-text="tableLoadingText"
-            style="width: 100%;" max-height="700" :stripe="true" :fit="true" :border="true">
+            style="width: 100%;height: 70vh;" :stripe="true" :fit="true" :border="true">
     <el-table-column align="center" prop="picture_id" label="图片Id" fixed/>
     <el-table-column align="center" prop="picture_name" label="图片名称"/>
     <el-table-column align="center" sortable prop="created_time" label="获得时间"/>

@@ -12,7 +12,7 @@ const picutureOptions = {
             index: 0,
             row: {}
         },
-        //将从服务器得到的图片数据放入vuex的store仓库中
+        // 将从服务器得到的图片数据放入vuex的store仓库中
         pictureList: []
     },
 
@@ -50,6 +50,7 @@ const picutureOptions = {
                 });
             })
         },
+
         //设置的增加图片的函数
         async addPictureAction() {
             console.log("addPictureAction被调用了...")
@@ -68,7 +69,7 @@ const picutureOptions = {
                     headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(function (response) {
                     //得到服务器返回结果
-                    console.log("add picture : ", response.data)
+                    // console.log("add picture : ", response.data)
                     if (response.data.new_image_uri === "") {
                         reject("远程新增图片失败！")
                     } else if (response.data.new_image_uri === "error") {
@@ -84,6 +85,7 @@ const picutureOptions = {
                 });
             })
         },
+
         //设置的删除图片数据按钮实现了
         async deletePictureAction(context, option) {
             //console.log("deletePictureAction被调用了...", option)

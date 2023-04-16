@@ -19,7 +19,7 @@
 
   <!--设置的显示用户数据的表格-->
   <el-table :data="displayTableData" v-loading="isTableLoading" element-loading-text="tableLoadingText"
-            style="width: 100%;" max-height="500" :stripe="true" :fit="true">
+            style="width: 100%; height: 70vh;" :stripe="true" :fit="true">
     <el-table-column align="center" sortable prop="user_id" label="用户Id" fixed />
     <el-table-column align="center" prop="user_name" label="用户名" />
     <el-table-column align="center" prop="login_name" label="登录名" />
@@ -62,9 +62,9 @@
 
     <!--设置的默认隐藏的编辑图片数据表单，可视化与否由boolean类型变量控制-->
     <el-dialog v-model="dialogEditUserFormVisible" title="用户数据编辑">
-      <el-form :model="userFromData">
+      <el-form :model="userFormData">
         <el-form-item label="用户身份" :label-width="formLabelWidth">
-          <el-input v-model="userFromData.identification" autocomplete="off" />
+          <el-input v-model="userFormData.identification" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -127,7 +127,7 @@
 
 <script>
 //引入函数等
-import { computed, ref, reactive } from 'vue'
+import {computed, ref, reactive, onMounted} from 'vue'
 //引入store
 import { useStore } from 'vuex'
 
@@ -139,6 +139,7 @@ export default {
     const addUserFormRef = ref()
     //定义新增用户配置
     const dialogAddUserFormVisible = ref(false)
+
     //设置新增用户表单对应的数据
     const addUserForm = reactive({
       // "user_id": "",
@@ -151,6 +152,7 @@ export default {
       "lastLoginTime": "",
       "register_time": ""
     })
+
     //定义对增加用户表单填充时的检查
     const addUserFormRules = reactive({
       user_name: [
@@ -210,6 +212,26 @@ export default {
     const store = useStore()
     //定义搜索关键字变量
     const search = ref("")
+
+    //=====================================访问服务器获得用户列表数据开始====================================
+    //设置挂载时访问得到图片数据
+    onMounted(() => {
+      //先设置表格处于加载状态
+      isTableLoading.value = true
+      tableLoadingText.value = "正在从服务器加载用户列表，请稍后..."
+      //访问图片数据接口action
+      store.dispatch('userManageAbout/getUserListAction').then(response => {
+        //设置表格处于非加载状态
+        isTableLoading.value = false
+        console.log("UserManage onMounted response: ", response)
+      }).catch(error => {
+        //设置表格处于非加载状态
+        isTableLoading.value = false
+        console.log("ERROR: ", error)
+      })
+    })
+
+    //=====================================访问服务器获得用户列表数据结束=====================================
     //获得完整的服务器端数据，这里设置为vuex的store仓库数据
     const userData = computed(() => store.state.userManageAbout.userList)
     //计算过滤之后的属性，使用计算属性computed()
@@ -220,7 +242,7 @@ export default {
             !search.value || data.user_id.toLowerCase().includes(search.value.toLowerCase())
         ),
     )
-    //截取对应的数据展示到列表中
+    //选择对应的用户数据展示到列表中
     const displayTableData = computed(() =>
         //对filterTableData进行截取
         filterTableData.value.slice(beginDataIndex.value, endDataIndex.value)
@@ -241,77 +263,14 @@ export default {
       }
     }
 
-    //-----------------------------定义过滤图片是否被检测函数-----------------------
-    function filterIsTest(value, row) {
-      return row.is_test === value
-    }
-
-    //-----------------------------设置图片编辑功能相关变量和函数-------------------
-    const dialogEditUserFormVisible = ref(false)
-    const formLabelWidth = '140px'
-
-    //设置的弹出式编辑表格属性
-    const userFromData = reactive({
-      identification:""
-    })
-
-    //设置的编辑图片函数
-    function editUser(index, row) {
-      console.log("editUser, index :", index, "row : ", row)
-      //给userFromData的index属性设置index变量的值
-      userFromData.index = index
-      //给弹出的表单赋值
-      //将用户身份设置给userFormData中的identification
-      userFromData.identification = row.identification
-
-      //设置弹出表格可显示
-      dialogEditUserFormVisible.value = true
-
-    }
-
-    //确认修改图片名称和图片描述函数
-    function confirmEditUser() {
-      //调用actions中的修改图片函数，并传入修改后的数据作为参数
-      store.dispatch('userManageAbout/editUserAction', userFromData)
-      //设置显示表单与否变量为false，表示隐藏弹出表单
-      dialogEditUserFormVisible.value = false
-      //设置编辑用户身份成功提示
-      isAlert.value = true
-      alertMessage.value = "修改用户身份成功"
-    }
-
-    //---------------设置用户删除功能相关变量和函数-----------------------
-    //设置的删除用户数据函数
-    function deleteUser(index, row) {
-      console.log("deleteUser, index :", index, "row : ", row)
-      //将来得到的当前图片数据放入到store仓库中
-      store.state.userManageAbout.deleteUserNeedOptions.index = index
-      store.state.userManageAbout.deleteUserNeedOptions.row = row
-      //在删除之前打开对话框
-      isDeleteUserDialog.value = true
-    }
-
-    //--------------------------设置删除用户对话框提示-------------------------
-    function confirmDeleteUserDialog() {
-      //表示用户点击了确认删除，那么直接调用删除逻辑即可
-      //调用store库中的删除图片actions函数
-      store.dispatch("userManageAbout/deleteUserAction", store.state.userManageAbout.deleteUserNeedOptions)
-      //设置对话框隐藏
-      isDeleteUserDialog.value = false
-      //设置删除用户成功提示
-      isAlert.value = true
-      alertMessage.value = "删除用户成功"
-    }
-
-    //------------------------------设置增加用户的函数---------------------------------
+    //------------------------------------------------设置增加用户的函数------------------------------------------------
     function toOpenAddUserForm() {
-      console.log("addUser被调用了...")
+      console.log("toOpenAddUserForm被调用了...")
       //打开新增加用户表单对话框
       dialogAddUserFormVisible.value = true
     }
 
-    //设置提交新增用户表单的函数
-    //提交表单
+    //设置提交新增用户表单的函数，提交新增用户表单
     const submitAddUserForm = (addUserFormRef) => {
       //如果不存在，直接返回
       if (!addUserFormRef) return
@@ -327,7 +286,6 @@ export default {
           // 验证成功，调用store中存储的函数
           store.dispatch('userManageAbout/addUserAction', addUserForm).then(res => {
             console.log("addUser res is :", res)
-            //设置一个定时器模拟请求服务器响应时间为3秒
             //请求成功，设置变量isTableLoading的值为false
             isTableLoading.value = false
             isAddUserFormLoading.value = false
@@ -336,21 +294,30 @@ export default {
             alertMessage.value = "添加用户成功"
             //关闭新增加用户表单
             dialogAddUserFormVisible.value = false
-            console.log("请求成功，关闭表单跳转...")
-          }).catch(res => {
 
+            //重新请求服务器获得当前最新的用户列表
+            isTableLoading.value = true
+            tableLoadingText.value = "正在从服务器加载用户列表，请稍后..."
+            //访问图片数据接口action
+            store.dispatch('userManageAbout/getUserListAction').then(response => {
+              //设置表格处于非加载状态
+              isTableLoading.value = false
+              console.log("UserManage onMounted response: ", response)
+            }).catch(error => {
+              //设置表格处于非加载状态
+              isTableLoading.value = false
+              console.log("ERROR: ", error)
+            })
+          }).catch(res => {
             //添加失败，去除新增加用户表单loading和表格loading
             isTableLoading.value = false
             isAddUserFormLoading.value = false
-
             //弹出增加用户失败提示框
             isAlert.value = true
             //给出增加用户失败提示文字
             alertMessage.value = "增加用户失败，请稍后重试！"
-
-            console.log("catch inner res : ", res)
+            console.log("UserManage addUserFormRef catch inner res : ", res)
           })
-
         } else {
           console.log('error submit!', fields)
         }
@@ -362,6 +329,109 @@ export default {
       addUserFormRef.resetFields()
     }
 
+    //-------------------------------------------------设置用户删除功能相关变量和函数-------------------------------------------------------
+    //设置的删除用户数据函数
+    function deleteUser(index, row) {
+      console.log("deleteUser, index :", index, "row : ", row)
+      //将准备删除用户数据放入到store仓库对应的列表中
+      store.state.userManageAbout.deleteUserNeedOptions.index = index
+      store.state.userManageAbout.deleteUserNeedOptions.row = row
+      // 在删除之前打开对话框
+      isDeleteUserDialog.value = true
+    }
+
+    //----------------------------------------------------设置删除用户对话框提示-------------------------------------------------------------
+    function confirmDeleteUserDialog() {
+      //表示用户点击了确认删除，那么直接调用删除逻辑即可
+      //调用store库中的删除图片actions函数
+      store.dispatch('userManageAbout/deleteUserAction', store.state.userManageAbout.deleteUserNeedOptions.row).then(response => {
+        console.log("UserManage deleteUser response: ", response)
+        //设置删除用户对话框隐藏
+        isDeleteUserDialog.value = false
+        //设置删除用户成功提示
+        isAlert.value = true
+        alertMessage.value = "删除用户成功"
+
+        //重新请求服务器获得当前最新的用户列表
+        isTableLoading.value = true
+        tableLoadingText.value = "正在从服务器加载用户列表，请稍后..."
+        //访问图片数据接口action
+        store.dispatch('userManageAbout/getUserListAction').then(response => {
+          //设置表格处于非加载状态
+          isTableLoading.value = false
+          console.log("UserManage onMounted response: ", response)
+        }).catch(error => {
+          //设置表格处于非加载状态
+          isTableLoading.value = false
+          console.log("ERROR: ", error)
+        })
+      }).catch(error => {
+        //设置删除用户对话框隐藏
+        isDeleteUserDialog.value = false
+        alertMessage.value = "删除用户失败: " + error
+        console.log("ERROR: ", error)
+      })
+    }
+
+    //--------------------------------------------------------设置用户编辑功能相关变量和函数------------------------------------------------------
+    const dialogEditUserFormVisible = ref(false)
+    const formLabelWidth = '140px'
+
+    //设置的弹出式编辑表格属性
+    const userFormData = reactive({
+      identification:"",
+      row:""
+    })
+
+    //设置的编辑用户函数
+    function editUser(index, row) {
+      console.log("editUser, index :", index, "row : ", row)
+      //给userFormData的row属性设置row变量的值
+      userFormData.row = row
+      //给弹出的表单赋值
+      //将用户身份设置给userFormData中的identification
+      userFormData.identification = row.identification
+      //设置弹出表格可显示
+      dialogEditUserFormVisible.value = true
+    }
+
+    //确认修改用户身份函数
+    function confirmEditUser() {
+      //表示用户点击了确认修改，那么直接调用修改逻辑即可】
+      console.log("userFormData: ", userFormData)
+      console.log("user_id: ", userFormData.row['user_id'])
+
+      //调用store库中的修改图片actions函数
+      store.dispatch('userManageAbout/editUserAction', userFormData).then(response => {
+        console.log("UserManage editUserAction response: ", response)
+        //设置修改用户表单隐藏
+        dialogEditUserFormVisible.value = false
+        //设置编辑用户身份成功提示
+        isAlert.value = true
+        alertMessage.value = "修改用户身份成功"
+
+        //重新请求服务器获得当前最新的用户列表
+        isTableLoading.value = true
+        tableLoadingText.value = "正在从服务器加载用户列表，请稍后..."
+        //访问图片数据接口action
+        store.dispatch('userManageAbout/getUserListAction').then(response => {
+          //设置表格处于非加载状态
+          isTableLoading.value = false
+          console.log("UserManage onMounted response: ", response)
+        }).catch(error => {
+          //设置表格处于非加载状态
+          isTableLoading.value = false
+          console.log("ERROR: ", error)
+        })
+      }).catch(error => {
+        //设置修改用户表单隐藏
+        dialogEditUserFormVisible.value = false
+        alertMessage.value = "修改用户身份信息失败: " + error
+        console.log("ERROR: ", error)
+      })
+    }
+
+
     //最后，在Vue3中，凡是定义在setup函数中的，无论是数据还是函数都需要最后返回
     return {
       //返回数据
@@ -370,7 +440,7 @@ export default {
       dialogEditUserFormVisible,
       dialogAddUserFormVisible,
       formLabelWidth,
-      userFromData,
+      userFormData,
       currentPage,
       pageSize,
       small,
@@ -391,7 +461,6 @@ export default {
       //返回函数
       deleteUser,
       editUser,
-      filterIsTest,
       toOpenAddUserForm,//设置的打开新增用户表单的函数
       confirmEditUser,
       confirmDeleteUserDialog,

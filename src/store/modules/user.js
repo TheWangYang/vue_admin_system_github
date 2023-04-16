@@ -42,8 +42,9 @@ const userOptions = {
         },
 
         //定义的修改用户信息的函数
-        updateLoginNameAction(context, loginName) {//参数为用户当前提交的修改属性
-            console.log("updateLogiNameAction被调用了...", loginName)
+        //参数为用户当前提交的修改属性
+        updateLoginNameAction(context, loginName) {
+            // console.log("updateLogiNameAction被调用了...", loginName)
             //设置返回promise
             return new Promise((resolve, reject) => {
                 //模拟请求服务器响应时间为3s
@@ -86,7 +87,7 @@ const userOptions = {
 
     },
     mutations: {
-        //将学生数据放入到state对象
+        //将用户数据放入到state对象
         userIsExistMutation(state, currUserNameAndPwd) {
             //给state中的userInfo属性设置值
             state.userInfo = currUserNameAndPwd
@@ -94,6 +95,7 @@ const userOptions = {
             localStorage.userInfo = JSON.stringify(currUserNameAndPwd)
             //console.log("userIsExistMutation被调用了...")
         },
+
         //设置的修改用户登陆名的mutation
         updateLoginNameMutation(state, loginName) {
             console.log("updateLoginNameMutation被调用了...")
@@ -104,6 +106,7 @@ const userOptions = {
             state.userInfo = userInfo
             localStorage.userInfo = JSON.stringify(userInfo)
         },
+
         //更新用户info数据
         updateUserInfoMutation(state, info) {
             console.log("updateUserInfoMutation被调用了...")
@@ -115,9 +118,7 @@ const userOptions = {
             localStorage.userInfo = JSON.stringify(userInfo)
         }
     },
-
     getters: {}
-
 }
 
 export default userOptions

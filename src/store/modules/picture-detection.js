@@ -118,7 +118,19 @@ const pictureDetectionOptions = {
                     //得到服务器返回结果
                     console.log("detection picture : ", response.data)
                     if (JSON.stringify(response.data.annotations_list) === '[]') {
-                        reject("远程检测图片失败！")
+                        // reject("远程检测图片失败！")
+                        // 均成功
+                        //获得服务器检测得到的图片注释数组
+                        const annotations_list = response.data.annotations_list
+                        //获得服务器端保存检测结果图片相对路径
+                        const detection_relative_result_path = response.data.detection_relative_result_path
+                        //包装上述两个对象为一个新的value对象，传递给mutations方法中
+                        const value = {
+                            annotations_list, detection_relative_result_path
+                        }
+                        //得到检测结果，更新检测页面显示组件
+                        context.commit("detectionPictureMutation", value)
+                        resolve("远程检测图片成功！")
                     } else {
                         //获得服务器检测得到的图片注释数组
                         const annotations_list = response.data.annotations_list

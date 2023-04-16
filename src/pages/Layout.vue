@@ -61,13 +61,12 @@
                   </template>
                   <el-menu-item-group title="数据操作">
                     <el-menu-item index="/data-table">数据列表</el-menu-item>
-                    <!--                            <el-menu-item index="/data-check">数据检查</el-menu-item>-->
                   </el-menu-item-group>
 
-                  <el-sub-menu index="1-1">
-                    <template #title>数据操作待扩展1</template>
-                    <el-menu-item index="/">数据操作待扩展1-1</el-menu-item>
-                  </el-sub-menu>
+<!--                  <el-sub-menu index="1-1">-->
+<!--                    <template #title>数据操作待扩展1</template>-->
+<!--                    <el-menu-item index="/">数据操作待扩展1-1</el-menu-item>-->
+<!--                  </el-sub-menu>-->
                 </el-sub-menu>
 
                 <!--检测操作-->
@@ -83,10 +82,10 @@
                     <el-menu-item index="/picture-detection">图片检测</el-menu-item>
                   </el-menu-item-group>
 
-                  <el-sub-menu index="2-1">
-                    <template #title>检测操作待扩展1</template>
-                    <el-menu-item index="/">检测操作待扩展1-1</el-menu-item>
-                  </el-sub-menu>
+<!--                  <el-sub-menu index="2-1">-->
+<!--                    <template #title>检测操作待扩展1</template>-->
+<!--                    <el-menu-item index="/">检测操作待扩展1-1</el-menu-item>-->
+<!--                  </el-sub-menu>-->
                 </el-sub-menu>
 
                 <!--用户操作-->
@@ -103,10 +102,10 @@
                     <el-menu-item index="/user-manage">用户管理</el-menu-item>
                   </el-menu-item-group>
 
-                  <el-sub-menu index="3-1">
-                    <template #title>用户操作待扩展2</template>
-                    <el-menu-item index="#">用户操作待扩展2-1</el-menu-item>
-                  </el-sub-menu>
+<!--                  <el-sub-menu index="3-1">-->
+<!--                    <template #title>用户操作待扩展2</template>-->
+<!--                    <el-menu-item index="#">用户操作待扩展2-1</el-menu-item>-->
+<!--                  </el-sub-menu>-->
                 </el-sub-menu>
 
                 <!--系统相关-->
@@ -123,17 +122,18 @@
                     <el-menu-item index="/system-about">关于我们</el-menu-item>
                   </el-menu-item-group>
 
-                  <el-sub-menu index="4-1">
-                    <template #title>资源下载</template>
-                    <el-menu-item index="#">数据集下载</el-menu-item>
-                  </el-sub-menu>
+<!--                  <el-sub-menu index="4-1">-->
+<!--                    <template #title>资源下载</template>-->
+<!--                    <el-menu-item index="#">数据集下载</el-menu-item>-->
+<!--                  </el-sub-menu>-->
+
                 </el-sub-menu>
               </el-menu>
             </el-col>
           </el-row>
         </el-aside>
 
-        <el-scrollbar height="100%" style="width: 100%;">
+        <el-scrollbar height="100%" style="width: 100%;height:90vh;">
           <el-main style="width: 100%;">
             <!--放置router-view-->
             <router-view></router-view>
@@ -227,7 +227,7 @@ export default {
 /*参考网上部分资料之后，修改的样式*/
 .container_absolute {
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 0;
   bottom: 0;
   right: 0;
