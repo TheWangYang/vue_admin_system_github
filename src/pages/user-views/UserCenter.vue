@@ -64,7 +64,6 @@
 <script>
 //引入useStore
 import { useStore } from 'vuex'
-import {useRouter} from 'vue-router'
 import { ref } from 'vue'
 
 export default {
@@ -86,6 +85,7 @@ export default {
     //获得当前用户信息
     //判断是否存在于localStorage中
     if(localStorage.userInfo !== null) {
+      console.log("localStorage userInfo: ", localStorage.userInfo)
       currUser.value = JSON.parse(localStorage.userInfo)
     }
 
@@ -117,7 +117,6 @@ export default {
 
     }
 
-
     //更新用户手机号，需要接收验证码短信服务
     function updateUserPhone(){
       console.log("更新用户手机号...")
@@ -126,7 +125,6 @@ export default {
     //更新用户info数据
     function updateUserInfo(){
       console.log("更新用户手机号...")
-
       //设置loading显示
       isUserUpdateLoading.value = true
       //直接调用action中的函数

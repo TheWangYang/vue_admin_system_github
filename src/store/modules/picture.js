@@ -30,8 +30,8 @@ const picutureOptions = {
                     url: 'http://localhost:8080/proxy_1/picture_table',
                     method: 'post',
                     data: JSON.stringify({
-                        loginName: currUserInfo.loginName,
-                        loginPassword: currUserInfo.loginPassword
+                        login_name: currUserInfo.login_name,
+                        login_password: currUserInfo.login_password
                     }),
                     headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(function (response) {
@@ -63,8 +63,8 @@ const picutureOptions = {
                     url: 'http://localhost:8080/proxy_1/add_picture',
                     method: 'post',
                     data: JSON.stringify({
-                        loginName: currUserInfo.loginName,
-                        loginPassword: currUserInfo.loginPassword
+                        login_name: currUserInfo.login_name,
+                        login_password: currUserInfo.login_password
                     }),
                     headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(function (response) {
@@ -106,8 +106,8 @@ const picutureOptions = {
                     url: 'http://localhost:8080/proxy_1/picture_delete',
                     method: 'post',
                     data: JSON.stringify({
-                        loginName: currUserInfo.loginName,
-                        loginPassword: currUserInfo.loginPassword,
+                        login_name: currUserInfo.login_name,
+                        login_password: currUserInfo.login_password,
                         pictureId: pictureId,
                         save_path: save_path,
                         result_path: result_path
@@ -149,8 +149,8 @@ const picutureOptions = {
                     url: 'http://localhost:8080/proxy_1/picture_edit',
                     method: 'post',
                     data: JSON.stringify({
-                        loginName: currUserInfo.loginName,
-                        loginPassword: currUserInfo.loginPassword,
+                        login_name: currUserInfo.login_name,
+                        login_password: currUserInfo.login_password,
                         picture_id: value.picture_id,
                         picture_name: value.picture_name,
                         description: value.description

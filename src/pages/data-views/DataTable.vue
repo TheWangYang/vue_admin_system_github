@@ -321,7 +321,7 @@ export default {
     //---------------设置图片删除功能相关变量和函数-----------------------
     //设置的删除图片函数
     function deletePicture(index, row) {
-      //console.log("deletePicture, index :", index, "row : ", row)
+      console.log("deletePicture, index :", index, "row : ", row)
       //将得到的当前图片数据放入到store仓库中
       store.state.pictureAbout.deletePictureNeedOptions.index = index
       store.state.pictureAbout.deletePictureNeedOptions.row = row

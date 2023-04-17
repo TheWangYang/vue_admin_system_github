@@ -111,8 +111,8 @@ const pictureDetectionOptions = {
                         shooting_environment: curr_picture_properties.shooting_environment,
                         shooting_direction: curr_picture_properties.shooting_direction,
                         shooting_quality: curr_picture_properties.shooting_quality, //传入用户信息
-                        loginName: currUserInfo.loginName,
-                        loginPassword: currUserInfo.loginPassword
+                        login_name: currUserInfo.login_name,
+                        login_password: currUserInfo.login_name
                     }), headers: {'Content-Type': 'application/json;charset=UTF-8'}
                 }).then(function (response) {
                     //得到服务器返回结果
@@ -162,7 +162,7 @@ const pictureDetectionOptions = {
                     axios({
                         //走代理服务器访问数据
                         url: 'http://localhost:8080/proxy_1/add_picture', method: 'post', data: JSON.stringify({
-                            loginName: currUserInfo.loginName, loginPassword: currUserInfo.loginPassword
+                            login_name: currUserInfo.login_name, login_password: currUserInfo.login_password
                         }), headers: {'Content-Type': 'application/json;charset=UTF-8'}
                     }).then(function (response) {
                         //得到服务器返回结果

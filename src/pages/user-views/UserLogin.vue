@@ -15,11 +15,11 @@
                  :rules="rules" label-width="120px"
                  class="demo-ruleForm" :size="formSize" status-icon label-position="top">
           <el-form-item label="登录名" prop="loginName" label-width="200px">
-            <el-input v-model="ruleForm.loginName" placeholder="请输入登录名"/>
+            <el-input v-model="ruleForm.login_name" placeholder="请输入登录名"/>
           </el-form-item>
 
           <el-form-item label="登录密码" prop="loginPassword" label-width="200px">
-            <el-input v-model="ruleForm.loginPassword" placeholder="请输入登录密码"/>
+            <el-input v-model="ruleForm.login_password" placeholder="请输入登录密码"/>
           </el-form-item>
 
           <el-form-item>
@@ -74,17 +74,17 @@ export default {
     const ruleFormRef = ref()
 
     const ruleForm = reactive({
-      loginName: '',
-      loginPassword: ''
+      login_name: '',
+      login_password: ''
     })
 
     //设置对用户输入值的约束规则
     const rules = reactive({
-      loginName: [
+      login_name: [
         {required: true, message: '请输入您的登录名', trigger: 'blur'},
         {min: 3, max: 20, message: '长度（包含空格）应当在3到20个字符之间', trigger: 'blur'},
       ],
-      loginPassword: [
+      login_password: [
         {required: true, message: '请输入您的登录密码', trigger: 'blur'},
         {min: 6, max: 8, message: '长度应当在6到8个字符之间', trigger: 'blur'},
       ]
