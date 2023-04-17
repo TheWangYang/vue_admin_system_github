@@ -11,10 +11,11 @@ const userOptions = {
 
     //处理逻辑的对象
     actions: {
-        //设置的用户登录请求action
+        //-------------------------------------------设置的用户登录请求action------------------------------------------
         userIsExistAction(context, userInfo) {
             const {login_name, login_password} = userInfo
-            // 设置异步交互请求
+
+            // 与服务器进行异步交互请求
             return new Promise((resolve, reject) => {
                 axios({
                     //走代理服务器访问数据
@@ -37,53 +38,143 @@ const userOptions = {
                     //请求服务器失败
                     reject(error)
                 });
-
             })
         },
 
-        //定义的修改用户信息的函数
-        //参数为用户当前提交的修改属性
-        updateLoginNameAction(context, login_name) {
-            // console.log("updateLoginNameAction被调用了...", login_name)
-            //设置返回promise
+        //-------------------------------------------定义的修改用户信息的函数------------------------------------------
+        updateLoginNameAction(context, currUser) {
+            console.log("updateLoginNameAction被调用了 currUser: ", currUser)
+            // 设置请求远程服务器修改用户名
+            // 与服务器进行异步交互请求
             return new Promise((resolve, reject) => {
-                //模拟请求服务器响应时间为3s
-                setTimeout(function () {
-                    // console.log("login_name is null : ", login_name !== "")
-                    if (login_name !== "") {//判断是不是空的，是空的直接返回失败，不是空的返回成功
-                        //返回成功之前，调用commit请求mutations中的实际修改用户信息函数
-                        context.commit("updateLoginNameMutation", login_name)
-                        //返回成功
-                        resolve("success")
-                    } else {
-                        reject("error")
+                axios({
+                    //走代理服务器访问数据
+                    url: 'http://localhost:8080/proxy_1/update_user_login_name',
+                    method: 'post',
+                    data: JSON.stringify({
+                        user_id: currUser['user_id'],
+                        login_name: currUser['login_name']
+                    }),
+                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                }).then(function (response) {
+                    //得到服务器返回结果
+                    console.log("updateLoginNameAction inner res : ", response.data.flag)
+                    if (response.data.flag === 'failed') {
+                        reject("失败")
+                    } else if (response.data.flag === 'success'){
+                        //向localStorage中更新用户信息
+                        context.commit("updateLoginNameMutation", currUser)
+                        resolve("成功")
+                    }else{
+                        reject("错误")
                     }
-                }, 3000)
-
+                }).catch(function (error) {
+                    //请求服务器失败
+                    reject(error)
+                });
             })
         },
 
-        //定义修改用户信息的函数
-        updateUserInfoAction(context, info) {
-            console.log("updateUserInfoAction被调用了...", info)
-
-            //设置返回promise
+        updateUserPasswordAction(context, currUser) {
+            console.log("updateUserPasswordAction被调用了 currUser: ", currUser)
+            // 设置请求远程服务器修改用户密码
+            // 与服务器进行异步交互请求
             return new Promise((resolve, reject) => {
-                //模拟请求服务器响应时间为3s
-                setTimeout(function () {
-                    // console.log("loginName is null : ", loginName !== "")
-                    if (info !== "") {//判断是不是空的，是空的直接返回失败，不是空的返回成功
-                        //返回成功之前，调用commit请求mutations中的实际修改用户信息函数
-                        context.commit("updateUserInfoMutation", info)
-                        //返回成功
-                        resolve("success")
-                    } else {
-                        reject("error")
+                axios({
+                    //走代理服务器访问数据
+                    url: 'http://localhost:8080/proxy_1/update_user_login_password',
+                    method: 'post',
+                    data: JSON.stringify({
+                        user_id: currUser['user_id'],
+                        login_password: currUser['login_password']
+                    }),
+                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                }).then(function (response) {
+                    //得到服务器返回结果
+                    console.log("updateUserPasswordAction inner res : ", response.data.flag)
+                    if (response.data.flag === 'failed') {
+                        reject("失败")
+                    } else if (response.data.flag === 'success'){
+                        //向localStorage中更新用户信息
+                        context.commit("updateUserPasswordMutation", currUser)
+                        resolve("成功")
+                    }else{
+                        reject("错误")
                     }
-                }, 3000)
-
+                }).catch(function (error) {
+                    //请求服务器失败
+                    reject(error)
+                });
             })
         },
+
+        updateUserPhoneNumberAction(context, currUser) {
+            console.log("updateUserPhoneNumberAction被调用了 currUser: ", currUser)
+            // 设置请求远程服务器修改用户手机号
+            // 与服务器进行异步交互请求
+            return new Promise((resolve, reject) => {
+                axios({
+                    //走代理服务器访问数据
+                    url: 'http://localhost:8080/proxy_1/update_user_phone_number',
+                    method: 'post',
+                    data: JSON.stringify({
+                        user_id: currUser['user_id'],
+                        phone_number: currUser['phone_number']
+                    }),
+                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                }).then(function (response) {
+                    //得到服务器返回结果
+                    console.log("updateUserPhoneNumberAction inner res : ", response.data.flag)
+                    if (response.data.flag === 'failed') {
+                        reject("失败")
+                    } else if (response.data.flag === 'success'){
+                        //向localStorage中更新用户信息
+                        context.commit("updateUserPhoneNumberMutation", currUser)
+                        resolve("成功")
+                    }else{
+                        reject("错误")
+                    }
+                }).catch(function (error) {
+                    //请求服务器失败
+                    reject(error)
+                });
+            })
+        },
+
+
+        updateUserInfoAction(context, currUser) {
+            console.log("updateUserInfoAction被调用了 currUser: ", currUser)
+            // 设置请求远程服务器修改用户info
+            // 与服务器进行异步交互请求
+            return new Promise((resolve, reject) => {
+                axios({
+                    //走代理服务器访问数据
+                    url: 'http://localhost:8080/proxy_1/update_user_info',
+                    method: 'post',
+                    data: JSON.stringify({
+                        user_id: currUser['user_id'],
+                        info: currUser['info']
+                    }),
+                    headers: {'Content-Type': 'application/json;charset=UTF-8'}
+                }).then(function (response) {
+                    //得到服务器返回结果
+                    console.log("updateUserInfoAction inner res : ", response.data.flag)
+                    if (response.data.flag === 'failed') {
+                        reject("失败")
+                    } else if (response.data.flag === 'success'){
+                        //向localStorage中更新用户信息
+                        context.commit("updateUserInfoMutation", currUser)
+                        resolve("成功")
+                    }else{
+                        reject("错误")
+                    }
+                }).catch(function (error) {
+                    //请求服务器失败
+                    reject(error)
+                });
+            })
+        }
+
 
     },
     mutations: {
@@ -97,26 +188,41 @@ const userOptions = {
         },
 
         //设置的修改用户登陆名的mutation
-        updateLoginNameMutation(state, login_name) {
+        updateLoginNameMutation(state, currUser) {
             console.log("updateLoginNameMutation被调用了...")
-            //更新localStorage中的userInfo
-            const userInfo = JSON.parse(localStorage.userInfo)
-            userInfo.login_name = login_name
-            //更新state中的userInfo
-            state.userInfo = userInfo
-            localStorage.userInfo = JSON.stringify(userInfo)
+            // 更新state中的userInfo
+            state.userInfo = currUser
+            // 更新localStorage中的userInfo
+            localStorage.userInfo = JSON.stringify(currUser)
         },
 
-        //更新用户info数据
-        updateUserInfoMutation(state, info) {
-            console.log("updateUserInfoMutation被调用了...")
-            //更新localStorage中的userInfo
-            const userInfo = JSON.parse(localStorage.userInfo)
-            userInfo.info = info
+        //更新用户password数据
+        updateUserPasswordMutation(state, currUser) {
+            console.log("updateUserPasswordMutation被调用了...")
             //更新state中的userInfo
-            state.userInfo = userInfo
-            localStorage.userInfo = JSON.stringify(userInfo)
-        }
+            state.userInfo = currUser
+            //更新localStorage中的userInfo
+            localStorage.userInfo = JSON.stringify(currUser)
+        },
+
+        // 更新用户phone_number数据
+        updateUserPhoneNumberMutation(state, currUser) {
+            console.log("updateUserPhoneNumberMutation被调用了...")
+            //更新state中的userInfo
+            state.userInfo = currUser
+            //更新localStorage中的userInfo
+            localStorage.userInfo = JSON.stringify(currUser)
+        },
+
+        // 更新用户info
+        updateUserInfoMutation(state, currUser) {
+            console.log("updateUserInfoMutation被调用了...")
+            //更新state中的userInfo
+            state.userInfo = currUser
+            //更新localStorage中的userInfo
+            localStorage.userInfo = JSON.stringify(currUser)
+        },
+
     },
     getters: {}
 }

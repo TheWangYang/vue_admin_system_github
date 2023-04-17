@@ -89,64 +89,89 @@ export default {
       currUser.value = JSON.parse(localStorage.userInfo)
     }
 
-    //定义修改用户数据的函数
+    // 定义修改用户名
     function updateLoginName(){
-      console.log("updateLoginName被调用了...")
       //设置loading显示
       isUserUpdateLoading.value = true
       //直接调用action中的函数
-      store.dispatch("userAbout/updateLoginNameAction", currUser.value.login_name).then(res => {
-        console.log("then res : ",res)
-        //弹出对话框，告知用户已经修改完毕
-        userInfoDialogMessage.value = "更新用户信息成功"
+      store.dispatch("userAbout/updateLoginNameAction", currUser.value).then(res => {
+        console.log("updateLoginName front res : ", res)
+        //弹出对话框，通知用户已经修改完毕
+        userInfoDialogMessage.value = "更新用户名: " + res
         isUserUpdateDialog.value = true
         //设置loading不显示
         isUserUpdateLoading.value = false
-      }).catch(res => {
-        console.log("catch res : ", res)
-        userInfoDialogMessage.value = "更新用户信息失败"
+      }).catch(error => {
+        console.log("updateLoginName front error: ", error)
+        userInfoDialogMessage.value = "更新用户名: " + error
         isUserUpdateDialog.value = true
         //设置loading不显示
         isUserUpdateLoading.value = false
       })
     }
 
-    //更新用户，密码实现了
+    //更新用户密码
     function updateUserPassword(){
-      console.log("更新用户密码...")
-
+      //设置loading显示
+      isUserUpdateLoading.value = true
+      //直接调用action中的函数
+      store.dispatch("userAbout/updateUserPasswordAction", currUser.value).then(res => {
+        console.log("updateUserPassword front res : ", res)
+        //弹出对话框，通知用户已经修改完毕
+        userInfoDialogMessage.value = "更新用户密码: " + res
+        isUserUpdateDialog.value = true
+        //设置loading不显示
+        isUserUpdateLoading.value = false
+      }).catch(error => {
+        console.log("updateUserPassword front error: ", error)
+        userInfoDialogMessage.value = "更新用户密码: " + error
+        isUserUpdateDialog.value = true
+        //设置loading不显示
+        isUserUpdateLoading.value = false
+      })
     }
 
-    //更新用户手机号，需要接收验证码短信服务
+    //更新用户手机号
     function updateUserPhone(){
-      console.log("更新用户手机号...")
+      //设置loading显示
+      isUserUpdateLoading.value = true
+      //直接调用action中的函数
+      store.dispatch("userAbout/updateUserPhoneNumberAction", currUser.value).then(res => {
+        console.log("updateUserPhone front res : ", res)
+        //弹出对话框，通知用户已经修改完毕
+        userInfoDialogMessage.value = "更新用户手机号: " + res
+        isUserUpdateDialog.value = true
+        //设置loading不显示
+        isUserUpdateLoading.value = false
+      }).catch(error => {
+        console.log("updateUserPhone front error: ", error)
+        userInfoDialogMessage.value = "更新用户手机号: " + error
+        isUserUpdateDialog.value = true
+        //设置loading不显示
+        isUserUpdateLoading.value = false
+      })
     }
 
     //更新用户info数据
     function updateUserInfo(){
-      console.log("更新用户手机号...")
       //设置loading显示
       isUserUpdateLoading.value = true
       //直接调用action中的函数
-      store.dispatch("userAbout/updateUserInfoAction", currUser.value.info).then(res => {
-        console.log("then res : ",res)
-        //弹出对话框，告知用户已经修改完毕
-        userInfoDialogMessage.value = "更新用户信息成功"
+      store.dispatch("userAbout/updateUserInfoAction", currUser.value).then(res => {
+        console.log("updateUserInfo front res : ", res)
+        //弹出对话框，通知用户已经修改完毕
+        userInfoDialogMessage.value = "更新用户信息: " + res
         isUserUpdateDialog.value = true
         //设置loading不显示
         isUserUpdateLoading.value = false
-      }).catch(res => {
-        console.log("catch res : ", res)
-        userInfoDialogMessage.value = "更新用户信息失败"
+      }).catch(error => {
+        console.log("updateUserInfo front error: ", error)
+        userInfoDialogMessage.value = "更新用户信息: " + error
         isUserUpdateDialog.value = true
         //设置loading不显示
         isUserUpdateLoading.value = false
       })
-
-
-
     }
-
 
 
     //最后无论是变量还是函数都需要返回出去
